@@ -1,62 +1,30 @@
-package kr.re.kitri.hello.service.impl;
+package kr.re.kitri.hello.repository;
 
 import kr.re.kitri.hello.model.Article;
-import kr.re.kitri.hello.repository.ArticleRepository;
-import kr.re.kitri.hello.service.ArticleService;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-@Service
-@Slf4j
-public class ArticleServiceImpl implements ArticleService {
+import static org.junit.jupiter.api.Assertions.*;
 
-//    private static final Logger logger =
-//            LoggerFactory.getLogger(ArticleServiceImpl.class);
+@SpringBootTest
+@Transactional
+public class ArticleRepositoryTests {
 
-    private final ArticleRepository articleRepository;
+    @Autowired
+    private ArticleRepository articleRepository;
 
-    public ArticleServiceImpl(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
-    }
+    @Test
+    public void testInsertArticle() {
+        // 인서트 해보고 조회해서 데이터 있으면 통과
+        Article article =
+                new Article(99999991L, "kim", "kkkkk", "sdfsdf", LocalDateTime.now(), 0);
 
-    // 전체글을 조회해서 전달하는 기능
-    @Override
-    public List<Article> getAllArticles() {
-        // 실제 repository의 DB조회하는 함수를 호출하여 기능을 수행한다.
-        log.debug("getAllArticles 함수 사용");
-        return articleRepository.selectAllArticles();
-    }
-
-    // articleId로 글을 조회하는 함수
-    @Override
-    public Article getArticleByArticleId(Long articleId) {
-        // 레파지토리의 상세보기 기능을 호출
-        return articleRepository.selectArticleByArticleId(articleId);
-    }
-
-    @Override
-    public void registArticle(Article article) {
-        // article(글)을 등록한다..  article 테이블에 인서트..
         articleRepository.insertArticle(article);
-    }
-
-
-    @Override
-    public void increaseLikes() {
-
-    }
-
-    @Override
-    public void updateArticle(Article article) {
-        articleRepository.updateArticle(article);
-    }
-
-    @Override
-    public void removeArticle(Long articleId) {
-        articleRepository.removeArticle(articleId);
+        Article article1 = articleRepository.selectArticleByArticleId(99999991L);
+        assertNotNull(article1);
     }
 }

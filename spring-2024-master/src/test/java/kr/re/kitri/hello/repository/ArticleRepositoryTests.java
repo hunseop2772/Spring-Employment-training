@@ -1,33 +1,35 @@
-package kr.re.kitri.hello.repository;
+package kr.re.kitri.hello.aop;
 
 
-import kr.re.kitri.hello.model.Article;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+@Slf4j
+@Aspect
+@Component
+public class LoggingAspect {
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@SpringBootTest
-@Transactional
-public class ArticleRepositoryTests {
-
-    @Autowired
-    private ArticleRepository articleRepository;
-
-    @Test
-    public void testInsertArticle(){
-        // 인서트 해보고 조회해서 데이터 있으면 통과
-        Article article =
-                new Article(9999999L, "kim", "kkkkk", "sdfsdf", LocalDateTime.now(), 0);
-
-        articleRepository.insertArticle(article);
-
-        Article article1 = articleRepository.selectArticleByArticleId(9999999l);
-         assertNotNull(article1);
+    @Before("execution(* kr.re.kitri.hello.service.*Service.*(..))")
+    public void loggingBeforeService(JoinPoint joinPoint) {
+        String methodName = joinPoint.getSignature().getName();
+        String className = joinPoint.getSignature().getDeclaringTypeName();
+        log.info(className + "." + methodName + " 함수가 호출되었습니다.");
     }
 
+    @Around("execution(* kr.re.kitri.hello.service.*.*(..))")
+    public Object measureRunningTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        long startTime = System.currentTimeMillis();
+        Object obj = joinPoint.proceed();
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        log.info(joinPoint.getSignature().getName() + " 메소드의 실행시간은 " + elapsedTime + "ms 입니다.");
+
+        return obj;
+    }
 }
