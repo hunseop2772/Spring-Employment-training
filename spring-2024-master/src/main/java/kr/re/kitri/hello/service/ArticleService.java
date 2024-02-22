@@ -11,4 +11,8 @@ public interface ArticleService {
     public Article getArticleByArticleId(Long articleId);
     public void registArticle(Article article);
     public void increaseLikes();
+
+    void updateArticle(Article article);
+
+    void removeArticle(Long articleId);
 }

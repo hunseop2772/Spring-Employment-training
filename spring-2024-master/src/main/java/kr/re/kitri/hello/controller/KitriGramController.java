@@ -3,6 +3,8 @@ package kr.re.kitri.hello.controller;
 import kr.re.kitri.hello.model.Article;
 import kr.re.kitri.hello.service.ArticleService;
 import kr.re.kitri.hello.service.impl.ArticleServiceImpl;
+import org.apache.ibatis.annotations.Delete;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -30,22 +32,32 @@ public class KitriGramController {
 
     // 상세 글 보기  GET :: /articles/{articleId}   Article
     @GetMapping("/articles/{articleId}")
-    public Article articleDetail(@PathVariable Long articleId) {
+    public ResponseEntity articleDetail(@PathVariable Long articleId) {
         Article article = articleService.getArticleByArticleId(articleId);
         // Article 을 반환
-        return article;
+        return ResponseEntity.ok(article);
     }
     // 글 등록   POST :: /articles
     @PostMapping("/articles")
-    public void registArticle(@RequestBody Article article) {
+    public ResponseEntity<Void> registArticle(@RequestBody Article article) {
         // 프론트엔드에서 전달된 데이터를 확보..
         article.setCreatedAt(LocalDateTime.now());
         // article 객체(데이터가 채워진)를 서비스에 전달해서 기능을 수행..
         articleService.registArticle(article);
+        return ResponseEntity.ok().build();
     }
 
-    // 글 수정
+    // 글 수정   PUT :: /articles
+    @PutMapping("/articles")
+    public ResponseEntity<Void> updateArticle(@RequestBody Article article) {
+        articleService.updateArticle(article);
+        return ResponseEntity.ok().build();
+    }
 
     // 글 삭제
-
+    @DeleteMapping("/articles/{articleId}")
+    public ResponseEntity<Void> removeArticle(@PathVariable Long articleId){
+        articleService.removeArticle(articleId);
+        return ResponseEntity.ok().build();
+    }
 }

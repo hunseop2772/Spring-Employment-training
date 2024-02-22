@@ -41,4 +41,14 @@ public class ArticleServiceImpl implements ArticleService {
     public void increaseLikes() {
 
     }
+
+    @Override
+    public void updateArticle(Article article) {
+        articleRepository.updateArticle(article);
+    }
+
+    @Override
+    public void removeArticle(Long articleId) {
+        articleRepository.removeArticle(articleId);
+    }
 }
