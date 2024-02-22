@@ -1,6 +1,8 @@
 package kr.re.kitri.hello.controller;
 
 import kr.re.kitri.hello.model.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 // 실제로 요청을 받는 .. url 에 매핑된 함수들이 정의
 @RestController
 public class HomeController {
+
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(KitriGramController.class);
 
     @GetMapping("/")
     public String home() {
