@@ -16,4 +16,7 @@ public class Article {
     private String imageUrl;
     private LocalDateTime createdAt;
     private int likes;
+
+    public Article(long l, String 이순신, String 내용, LocalDateTime now, int i) {
+    }
 }
